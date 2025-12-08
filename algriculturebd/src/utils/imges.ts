@@ -1,4 +1,6 @@
-const baseUrl = 'http://47.115.160.54:28080/api/v1'
+import { BASE_URL } from './config'
+
+const baseUrl = BASE_URL
 
 export const avatar = (filename) => {
   return filename ? `${baseUrl}/files/avatar/${filename}` : ''

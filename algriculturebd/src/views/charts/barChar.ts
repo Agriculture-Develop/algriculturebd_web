@@ -1,8 +1,10 @@
 import type { ECOption } from '#/echarts'
 import { comGrid, comLegend, comToolTip, comXAxis, comYAxis } from '@/utils/echarts-config'
 
-export const createBarChart = (props: { xData: any, y1: any } = { xData: [], y1: [] }) => {
-  const { xData, y1 } = props
+export const createBarChart = (
+  props: { xData: any; y1: any; y2: any; y3: any } = { xData: [], y1: [], y2: [], y3: [] },
+) => {
+  const { xData, y1, y2, y3 } = props
   const options: ECOption = {
     color: ['#389e0d'],
     tooltip: comToolTip(),
@@ -13,13 +15,19 @@ export const createBarChart = (props: { xData: any, y1: any } = { xData: [], y1:
     series: [
       {
         type: 'bar',
-        name: '预计产量',
+        name: '最低价',
         data: y1,
-        // 柱状图的宽度
-        barWidth: 60,
-        barGap: '0.67',
       },
-
+      {
+        type: 'bar',
+        name: '平均价',
+        data: y2,
+      },
+      {
+        type: 'bar',
+        name: '最高价',
+        data: y3,
+      },
     ],
   }
 

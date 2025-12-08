@@ -1,8 +1,10 @@
 import type { ECOption } from '#/echarts'
 import { comGrid, comLegend, comToolTip, comXAxis, comYAxis } from '@/utils/echarts-config'
 
-export const createLineChart = (props: { xData: any, y1: any } = { xData: [], y1: [] }) => {
-  const { xData, y1 } = props
+export const createLineChart = (
+  props: { xData: any; y1: any; y2: any; y3: any } = { xData: [], y1: [], y2: [], y3: [] },
+) => {
+  const { xData, y1, y2, y3 } = props
   const options: ECOption = {
     color: ['#389e0d'],
     tooltip: comToolTip(),
@@ -13,10 +15,19 @@ export const createLineChart = (props: { xData: any, y1: any } = { xData: [], y1
     series: [
       {
         type: 'line',
-        name: '哈密瓜价格（元/斤）',
+        name: '最低价',
         data: y1,
       },
-
+      {
+        type: 'line',
+        name: '平均价',
+        data: y2,
+      },
+      {
+        type: 'line',
+        name: '最高价',
+        data: y3,
+      },
     ],
   }
 

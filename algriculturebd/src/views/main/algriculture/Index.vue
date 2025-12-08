@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 
@@ -7,14 +7,14 @@ const tabsItems = [
     path: 'algriculturePrice',
     name: '价格行情',
   },
-  {
-    path: 'plantingArea',
-    name: '种植面积',
-  },
-  {
-    path: 'yieldPredict',
-    name: '产量预测',
-  },
+  // {
+  //   path: 'plantingArea',
+  //   name: '种植面积',
+  // },
+  // {
+  //   path: 'yieldPredict',
+  //   name: '产量预测',
+  // },
 ]
 const activeIndex = ref(0)
 function tabsAvtive(index: number) {
@@ -26,7 +26,12 @@ function tabsAvtive(index: number) {
   <main class="container">
     <!-- 数据选项卡 -->
     <div class="data-tabs">
-      <div v-for="item, index in tabsItems" :key="item.path" class="data-tab" :class="{ active: activeIndex === index }">
+      <div
+        v-for="(item, index) in tabsItems"
+        :key="item.path"
+        class="data-tab"
+        :class="{ active: activeIndex === index }"
+      >
         <RouterLink :to="item.path" class="w-full h-full block" @click="tabsAvtive(index)">
           {{ item.name }}
         </RouterLink>
