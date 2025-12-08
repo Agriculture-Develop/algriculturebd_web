@@ -1,104 +1,132 @@
 <script setup lang="ts">
 import type { TabsPaneContext } from 'element-plus'
+import { useRequest } from 'alova/client'
 import { ElImage } from 'element-plus'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref, watch, watchEffect } from 'vue'
 import { RouterLink } from 'vue-router'
 // import bannerImg2 from '@/static/img/bannerImg/banner_new.webp'
 import bannerImg3 from '@/static/img/bannerImg/banana.jpg'
 import bannerImg2 from '@/static/img/bannerImg/boluo2.jpg'
 import bannerImg1 from '@/static/img/bannerImg/boluo.jpg'
 import bannerImg4 from '@/static/img/bannerImg/lingmeng.jpg'
+import { newsImg } from '@/utils/imges'
+import { formatTime } from '@/utils/time'
+
+interface Inews {
+  id?: number
+  title?: string
+  category_id?: number
+  category?: string
+  abstract?: string
+  keyword?: string[]
+  source?: string
+  content?: string
+  cover_url?: string
+  files_url?: string[]
+  status?: string
+  author?: string
+  types?: string
+  created_at?: string
+  updated_at?: string
+}
 
 // 轮播图
-const bannerItem = [{
-  img: bannerImg3,
-  id: 1,
-}, {
-  img: bannerImg3,
-  id: 2,
-}, {
-  img: bannerImg3,
-  id: 3,
-}]
+const bannerItem = [
+  {
+    img: bannerImg3,
+    id: 1,
+  },
+  {
+    img: bannerImg3,
+    id: 2,
+  },
+  {
+    img: bannerImg3,
+    id: 3,
+  },
+]
 // newlist图片
 
-const activeName = ref('first')
+const activeName = ref('新闻')
+const tabs = ref(['新闻', '政策'])
 
-const handleClick = (tab: TabsPaneContext, event: Event) => {
-  console.log(tab, event)
+// 获取新闻列表
+const getNews = async () => {
+  const res = await Apis.news.get_admin_news_list({ params: { count: 1000, status: '已发布' } })
+  newsList.value = res.data.list
+  console.log(newsList.value)
 }
-// pagination
-const data = ref([
-  { name: 'John', age: 25, address: 'New York' },
-  { name: 'Jane', age: 30, address: 'Los Angeles' },
-
-  { name: 'Jane', age: 30, address: 'Los Angeles' },
-  { name: 'Jane', age: 30, address: 'Los Angeles' },
-  { name: 'Jane', age: 30, address: 'Los Angeles' },
-  { name: 'Jane', age: 30, address: 'Los Angeles' },
-  { name: 'Jane', age: 30, address: 'Los Angeles' },
-  { name: 'Jane', age: 30, address: 'Los Angeles' },
-  { name: 'Jane', age: 30, address: 'Los Angeles' },
-  { name: 'Jane', age: 30, address: 'Los Angeles' },
-  { name: 'Jane', age: 30, address: 'Los Angeles' },
-
-  // 更多数据...
-])
-const newsList = ref([
-  { title: '1全辖首个1到2个企业就业和就业服务体系综合服务', date: '2023-05-15', img: bannerImg1 },
-  { title: '2全辖首个1到2个国家企业就业和就业服务体系综合服务', date: '2023-05-15', img: bannerImg2 },
-  { title: '3全辖首个1到2个国家企业就业和就业服务体系综合服务', date: '2023-05-15', img: bannerImg4 },
-  { title: '4全辖首个1到2个国家企业就业和就业服务体系综合服务', date: '2023-05-15', img: bannerImg2 },
-  { title: '5全辖首个1到2个国家企业就业和就业服务体系综合服务', date: '2023-05-15', img: bannerImg2 },
-  { title: '6全辖首个1到2个国家企业就业和就业服务体系综合服务', date: '2023-05-15', img: bannerImg2 },
-  { title: '1全辖首个1到2个企业就业和就业服务体系综合服务', date: '2023-05-15', img: bannerImg2 },
-  { title: '2全辖首个1到2个国家企业就业和就业服务体系综合服务', date: '2023-05-15', img: bannerImg2 },
-  { title: '3全辖首个1到2个国家企业就业和就业服务体系综合服务', date: '2023-05-15', img: bannerImg2 },
-  { title: '4全辖首个1到2个国家企业就业和就业服务体系综合服务', date: '2023-05-15', img: bannerImg2 },
-  { title: '5全辖首个1到2个国家企业就业和就业服务体系综合服务', date: '2023-05-15', img: bannerImg2 },
-  { title: '6全辖首个1到2个国家企业就业和就业服务体系综合服务', date: '2023-05-15', img: bannerImg2 },
-])
-
+onMounted(() => {
+  getNews()
+})
+const newsList = ref<Inews[]>()
+const total = ref()
 const pageSize = ref(3)
 const currentPage = ref(1)
-const Pagecount = ref(0)
-// const total = computed(() => newsList.value.length)
-// const currentPageData = computed(() => {
-//   const start = (currentPage.value - 1) * pageSize.value
-//   const end = start + pageSize.value
-//   return data.value.slice(start, end)
-// })
-
 const paginatedNews = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value
   const end = start + pageSize.value
-  window.scrollTo({ top: 450, behavior: 'smooth' })
-  return newsList.value.slice(start, end)
+  // window.scrollTo({ top: 450, behavior: 'smooth' })
+  return groupedNews.value.map(group => ({
+    type: group.type,
+    items: group.items.slice(start, end),
+  }))
+})
+
+watch(activeName, () => {
+  currentPage.value = 1
+})
+const groupedNews = computed(() => {
+  const tabs: Record<string, typeof newsList.value> = { 新闻: [], 政策: [] }
+  newsList.value?.forEach((item) => {
+    tabs[item.types]?.push(item)
+  })
+  return Object.entries(tabs).map(([type, items]) => ({
+    type,
+    items,
+  }))
+})
+const paginatedNewsWithData = computed(() => {
+  return paginatedNews.value.filter(group => group.items.length > 0)
+})
+watchEffect(() => {
+  console.log(paginatedNews.value, 'paginatedNews')
+  console.log(newsList.value, 'newsList')
+  console.log(groupedNews.value, 'groupedNews')
+})
+const currentTabLength = computed(() => {
+  const tab = groupedNews.value.find(type => type.type === activeName.value)
+  return tab ? tab.items.length : 0
 })
 </script>
 
 <template>
   <div class="m-a">
     <!-- 搜索栏 -->
-    <section class="search-bar">
+    <!-- <section class="search-bar">
       <div class="search-container">
         <input type="text" class="search-input" placeholder="搜索农产品、供应商、价格...">
         <button class="search-btn">
           搜索
         </button>
       </div>
-    </section>
+    </section> -->
+
+    <!-- <ElButton>11</ElButton> -->
 
     <!-- 主要内容 -->
-    <main class="m-a w100%">
+    <main class="m-a w100% mt-4">
       <!-- 轮播图/横幅 -->
       <section class="banner h300px">
-        <el-carousel :autoplay="false" style="height: 100%; width: 100%;">
+        <el-carousel :autoplay="false" style="height: 100%; width: 100%">
           <RouterLink to="/main/news">
-            <el-carousel-item v-for="item in bannerItem" :key="item.id" style="height:100%">
+            <el-carousel-item v-for="item in bannerItem" :key="item.id" style="height: 100%">
               <a class="aspect-container size-full">
                 <ElImage
-                  :src="item.img" :alt="item.id" fit="cover" style="width: 100%; height: 100%"
+                  :src="item.img"
+                  :alt="item.id"
+                  fit="cover"
+                  style="width: 100%; height: 100%"
                 />
               </a>
             </el-carousel-item>
@@ -113,50 +141,40 @@ const paginatedNews = computed(() => {
             新闻动态
           </div>
         </RouterLink>
-        <el-tabs v-model="activeName" class="b-cyan" @tab-click="handleClick">
-          <el-tab-pane label="政策" name="first">
-            <div v-if="paginatedNews.length" class="news-list h-574px">
-              <div v-for="item in paginatedNews" :key="item.title " class="news-card h277px">
-                <RouterLink to="/main/news">
-                  <img :src="item.img" alt="新闻图片" class="news-image">
-                  <div class="news-content">
-                    <h3 class="news-title">
-                      {{ item.title }}
-                    </h3>
-                    <div class="news-date">
-                      {{ item.date }}
+        <el-tabs v-model="activeName" class="b-cyan">
+          <el-tab-pane v-for="tab in paginatedNews" :key="tab.type" :name="tab.type" :label="tab.type">
+            <div class="news-list h-574px">
+              <div v-for="item in tab.items" :key="item.id" class="news-card h277px">
+                <div>
+                  <RouterLink :to="`/main/news/${item.id}`">
+                    <img :src="newsImg(item.cover_url)" alt="新闻图片" class="news-image">
+                    <div class="news-content">
+                      <h3 class="news-title">
+                        {{ item.title }}
+                      </h3>
+                      <div class="news-date">
+                        {{ item.created_at }}
+                      </div>
                     </div>
-                  </div>
-                </RouterLink>
+                  </RouterLink>
+                </div>
+                <div v-if="tab.items.length === 0" class="h-574px">
+                  <el-empty :image-size="300" class="" />
+                </div>
               </div>
             </div>
-            <div v-else class="h-574px">
-              <el-empty :image-size="300" class="" />
-            </div>
-
-            <div class="pagination reliateve">
-              <el-pagination
-                v-model:current-page="currentPage"
-                v-model:page-size="pageSize"
-                background
-                layout="prev, pager, next, total, sizes"
-                :page-count="newsList.length"
-                :total="newsList.length"
-                :page-sizes="[3, 6]"
-                total-text="总共12页"
-              />
-            </div>
-          </el-tab-pane>
-          <el-tab-pane label="Config" name="second">
-            Config
-          </el-tab-pane>
-          <el-tab-pane label="Role" name="third" style="color: red;">
-            Role
-          </el-tab-pane>
-          <el-tab-pane label="Task" name="fourth">
-            Task
           </el-tab-pane>
         </el-tabs>
+        <div class="pagination">
+          <el-pagination
+            v-model:current-page="currentPage"
+            v-model:page-size="pageSize"
+            background
+            layout="prev, pager, next, total, sizes"
+            :total="currentTabLength"
+            :page-sizes="[3, 6]"
+          />
+        </div>
       </div>
 
       <!-- 价格行情 -->

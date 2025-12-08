@@ -1,47 +1,35 @@
 <script setup lang="ts">
-import {  useTemplateRef,ref } from 'vue'
+import { ref, useTemplateRef } from 'vue'
 
 const navMenu = useTemplateRef('navMenu')
 const navItem = ref([
   { name: '首页', path: '/main/index' },
   { name: '农产品产供销数据', path: '/main/algriculture' },
   { name: '新闻', path: '/main/news' },
-  { name: '关于我们', path: '/main/about' },
-
+  // { name: '关于我们', path: '/main/about' },
 ])
 </script>
 
 <template>
   <div>
-
-
-
     <header class="navbar">
-
-
-      
       <div class="container navbar-container">
         <div class="logo">
           农产品产供销数据平台
-
-
-
         </div>
         <ul v-for="item in navItem" ref="navMenu" :key="item.path" class="nav-menu">
           <RouterLink :to="item.path" active-class="active" class="nav-item cursor-pointer">
             {{ item.name }}
           </RouterLink>
         </ul>
-        <div class="auth-buttons">
+        <!-- <div class="auth-buttons">
           <RouterLink to="/login">
             <button class="btn btn-outline">
               登录
             </button>
           </RouterLink>
-          <!-- <button class="btn btn-primary">
-            注册
-          </button> -->
-        </div>
+
+        </div> -->
       </div>
     </header>
     <!-- 主要内容 -->
@@ -49,7 +37,7 @@ const navItem = ref([
       <router-view />
     </div>
     <!-- 页脚 -->
-    <footer class="footer">
+    <!-- <footer class="footer">
       <div class="container footer-container">
         <div class="footer-column">
           <h3>关于我们</h3>
@@ -87,10 +75,10 @@ const navItem = ref([
             <li>邮箱: service@ncp.com</li>
             <li>地址: 广东省茂名市茂南区</li>
             <li>
-              <div style="margin-top: 10px;">
-                <span style="margin-right: 10px; font-size: 20px;">📱</span>
-                <span style="margin-right: 10px; font-size: 20px;">💬</span>
-                <span style="font-size: 20px;">📧</span>
+              <div style="margin-top: 10px">
+                <span style="margin-right: 10px; font-size: 20px">📱</span>
+                <span style="margin-right: 10px; font-size: 20px">💬</span>
+                <span style="font-size: 20px">📧</span>
               </div>
             </li>
           </ul>
@@ -100,12 +88,12 @@ const navItem = ref([
       <div class="container copyright">
         © 2023 农产品产供销数据平台 版权所有
       </div>
-    </footer>
+    </footer> -->
   </div>
 </template>
 
 <style>
-        /* 全局样式 */
+/* 全局样式 */
 * {
   margin: 0;
   padding: 0;

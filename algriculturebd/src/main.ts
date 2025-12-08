@@ -6,6 +6,7 @@ import App from './App.vue'
 import router from './router'
 import 'element-plus/dist/index.css'
 import 'virtual:uno.css'
+import './api'
 
 const app = createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {

@@ -1,0 +1,1 @@
+import { alovaInstance } from "@/api";

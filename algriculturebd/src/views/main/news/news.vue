@@ -1,83 +1,59 @@
 <script setup lang='ts'>
 import { ElMessage } from 'element-plus'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import img from '@/static/img/bannerImg/banner_new.webp'
+import { newsImg } from '@/utils/imges'
+import { formatTime } from '@/utils/time'
 
 interface NewsItem {
-  id: number
-  title: string
-  date: string
-  content: string
-  imageUrl: string
-  category: string
-  views: number
-}
+  id?: number
+  title?: string
+  category_id?: number
+  category?: string
+  abstract?: string
+  keyword?: string[]
+  source?: string
+  content?: string
+  cover_url?: string
+  files_url?: string[]
+  status?: string
+  author?: string
+  types?: string
+  created_at?: string
+  updated_at?: string
 
-const newsList = ref<NewsItem[]>([
-  {
-    id: 1,
-    title: '茂名荔枝产业迎来丰收季，预计产量创新高',
-    date: '2024-03-20',
-    content: '茂名市荔枝种植面积达100万亩，今年预计产量将突破50万吨，创历史新高。当地政府积极推动荔枝产业升级，助力农民增收。通过引进新品种、推广新技术，茂名荔枝品质不断提升，市场竞争力显著增强。',
-    imageUrl: img,
-    category: '产业动态',
-    views: 1250,
-  },
-  {
-    id: 2,
-    title: '茂名香蕉产业转型升级，打造智慧农业示范区',
-    date: '2024-03-18',
-    content: '茂名市启动香蕉产业智慧化改造项目，引入物联网技术，实现精准种植和智能管理，提升香蕉品质和产量。项目总投资达5000万元，预计带动周边农户增收30%以上。',
-    imageUrl: img,
-    category: '科技创新',
-    views: 980,
-  },
-  {
-    id: 3,
-    title: '茂名农产品电商平台正式上线，助力农产品销售',
-    date: '2024-03-15',
-    content: '茂名市农产品电商平台正式运营，整合全市优质农产品资源，打通线上线下销售渠道，为农民提供便捷的销售平台。平台上线首月交易额突破1000万元，带动5000户农户增收。',
-    imageUrl: img,
-    category: '电商发展',
-    views: 1560,
-  },
-  {
-    id: 4,
-    title: '茂名举办首届农产品品牌节，展示特色农产品',
-    date: '2024-03-10',
-    content: '茂名市举办首届农产品品牌节，集中展示荔枝、香蕉、龙眼等特色农产品。活动期间签订产销合作协议20余份，意向金额达2亿元。',
-    imageUrl: img,
-    category: '品牌建设',
-    views: 890,
-  },
-  {
-    id: 5,
-    title: '茂名举办首届农产品品牌节，展示特色农产品',
-    date: '2024-03-10',
-    content: '茂名市举办首届农产品品牌节，集中展示荔枝、香蕉、龙眼等特色农产品。活动期间签订产销合作协议20余份，意向金额达2亿元。',
-    imageUrl: img,
-    category: '品牌建设',
-    views: 890,
-  },
-  {
-    id: 6,
-    title: '茂名举办首届农产品品牌节，展示特色农产品',
-    date: '2024-03-10',
-    content: '茂名市举办首届农产品品牌节，集中展示荔枝、香蕉、龙眼等特色农产品。活动期间签订产销合作协议20余份，意向金额达2亿元。',
-    imageUrl: img,
-    category: '品牌建设',
-    views: 890,
-  },
-])
+}
+const newsList = ref<NewsItem[]>(
+  [],
+)
 
 const currentPage = ref(1)
 const pageSize = ref(5)
+const total = ref(0)
 const searchKeyword = ref('')
 const selectedCategory = ref('全部')
 
-const categories = ['全部', '产业动态', '科技创新', '电商发展', '品牌建设']
+const categories = ref<any[]>(['全部'])
+const getCategories = async () => {
+  const res = await Apis.newsCategories.get_admin_news_categories_list({})
+  for (const item of res.data.list) {
+    categories.value.push(item.name)
+  }
+}
+getCategories()
+const getNews = async () => {
+  const res = await Apis.news.get_admin_news_list({ params: { count: 1000, status: '已发布' } })
+  total.value = res.data.total
 
+  newsList.value = res.data.list
+}
+getNews()
+
+watch([pageSize, currentPage], () => {
+  getNews()
+  console.log(pageSize.value * currentPage.value)
+})
 const filteredNews = computed(() => {
   return newsList.value.filter((news) => {
     const matchKeyword = news.title.toLowerCase().includes(searchKeyword.value.toLowerCase())
@@ -129,7 +105,7 @@ const handleDetialClick = (params: string) => {
     <!-- 搜索和筛选区域 -->
     <div class="flex search-filter mb-6 flex-col md:flex-row gap-4">
       <el-input
-        v-model="searchKeyword"
+        v-model.lazy="searchKeyword"
         placeholder="搜索新闻..."
         class="w-full md:w-64"
         @keyup.enter="handleSearch"
@@ -163,12 +139,12 @@ const handleDetialClick = (params: string) => {
         v-for="news in paginatedNews"
         :key="news.id"
         class="bg-white p-6 news-item rounded-lg shadow-md"
-        @click="handleDetialClick('2') "
+        @click="handleDetialClick(String(news.id)) "
       >
         <div class="flex flex-col md:flex-row gap-6">
           <div class="news-image w-full md:w-1/3">
             <img
-              :src="news.imageUrl"
+              :src="newsImg(news.cover_url)"
               :alt="news.title"
               class="w-full rounded-lg h-48 object-cover"
             >
@@ -178,16 +154,16 @@ const handleDetialClick = (params: string) => {
               <el-tag size="small" type="success">
                 {{ news.category }}
               </el-tag>
-              <span class="text-gray-500 text-sm">{{ news.views }} 阅读</span>
+              <span class="text-gray-500 text-sm">{{ news.source }} </span>
             </div>
             <h2 class="mb-2 text-xl font-semibold">
               {{ news.title }}
             </h2>
             <p class="text-gray-500 mb-4">
-              {{ news.date }}
+              {{ formatTime(news.created_at) }}
             </p>
             <p class="text-gray-700">
-              {{ news.content }}
+              {{ news.abstract }}
             </p>
           </div>
         </div>
@@ -198,11 +174,11 @@ const handleDetialClick = (params: string) => {
     <div class="mt-8 flex justify-center pagination-container">
       <el-pagination
         v-model:current-page="currentPage"
-        :page-size="pageSize"
-        :total="filteredNews.length"
+        v-model:page-size="pageSize"
+        :total="total"
         :page-sizes="[5, 10, 20]"
         layout="total, sizes, prev, pager, next"
-        @size-change="pageSize = $event"
+
         @current-change="handlePageChange"
       />
     </div>

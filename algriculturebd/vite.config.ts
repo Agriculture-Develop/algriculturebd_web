@@ -16,18 +16,25 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 // API服务器地址
-const API_BASE_URL = 'http://47.115.160.54:28080'
+const API_BASE_URL = 'http://47.115.160.54:28080/api/v1'
 export default defineConfig({
-  plugins: [vueDevTools({
-    componentInspector: {
-      toggleComboKey: 'control-shift',
-      launchEditor: 'code',
-    },
-  }), vue(), vueJsx(), UnoCSS(), AutoImport({
-    resolvers: [ElementPlusResolver()],
-  }), Components({
-    resolvers: [ElementPlusResolver({ importStyle: 'sass' })],
-  })],
+  plugins: [
+    vueDevTools({
+      componentInspector: {
+        toggleComboKey: 'control-shift',
+        launchEditor: 'code',
+      },
+    }),
+    vue(),
+    vueJsx(),
+    UnoCSS(),
+    AutoImport({
+      resolvers: [ElementPlusResolver()],
+    }),
+    Components({
+      resolvers: [ElementPlusResolver({ importStyle: 'sass' })],
+    }),
+  ],
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
@@ -50,10 +57,11 @@ export default defineConfig({
     cors: true,
     // 代理配置
     proxy: {
-      '/api': {
+      '^/(admin|public|auth|files)': {
         target: API_BASE_URL,
         changeOrigin: true,
-        rewrite: path => path.replace(/^\/api/, ''),
+        // rewrite: path => path.replace(/^\/admin/, ''),
+        rewrite: path => path,
         configure: (proxy, options) => {
           // 代理服务器配置
           proxy.on('error', (err, req, res) => {

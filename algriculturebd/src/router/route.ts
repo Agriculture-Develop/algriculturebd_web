@@ -9,7 +9,7 @@ export const routes: RouteRecordRaw[] = [
     path: '/main',
     name: 'main',
     redirect: '/main/index',
-    component: () => import('@/views/main/Main.vue'),
+    component: () => import('@/views/main/main.vue'),
     children: [
       { path: 'index', name: 'index', component: () => import('@/views/main/index/Index.vue') },
       {
@@ -19,37 +19,39 @@ export const routes: RouteRecordRaw[] = [
       },
       {
         path: 'news',
-        redirect: '/main/news/news',
-        children: [
-          // { path: 'news', name: 'news', component: () => import('@/views/main/news/news1.vue') ,
+        name: 'news',
+        component: () => import('@/views/main/news/news.vue'),
 
-          // },
-          { path: 'industyConsult', name: 'industrConsult', component: () => import('@/views/main/news/IndustyConsult.vue') },
-          {
-            path: 'policyDoc',
-            name: 'policyDoc',
-            component: () => import('@/views/main/news/PolicyDoc.vue'),
-          },
-          {
-            path: 'news',
-            name: 'news',
-            component: () => import('@/views/main/news/news.vue'),
-          },
-          { path: 'news/:id', name: 'detail', component: () => import('@/views/main/news/detail.vue') },
-        ],
       },
+      {
+        path: 'news/:id',
+        name: 'detail',
+        component: () => import('@/views/main/news/detail.vue'),
+      },
+
       {
         path: 'algriculture',
         name: 'Algriculture',
         redirect: '/main/algriculture/algriculturePrice',
         component: () => import('@/views/main/algriculture/Index.vue'),
         children: [
-          { path: 'algriculturePrice', name: 'algriculturePrice', component: () => import('@/views/main/algriculture/AlgriculturePrice.vue') },
-          { path: 'plantingArea', name: 'PlantingArea', component: () => import('@/views/main/algriculture/PlantingArea.vue') },
-          { path: 'yieldPredict', name: 'YieldPredict', component: () => import('@/views/main/algriculture/YieldPrediction.vue') },
+          {
+            path: 'algriculturePrice',
+            name: 'algriculturePrice',
+            component: () => import('@/views/main/algriculture/AlgriculturePrice.vue'),
+          },
+          {
+            path: 'plantingArea',
+            name: 'PlantingArea',
+            component: () => import('@/views/main/algriculture/PlantingArea.vue'),
+          },
+          {
+            path: 'yieldPredict',
+            name: 'YieldPredict',
+            component: () => import('@/views/main/algriculture/YieldPrediction.vue'),
+          },
         ],
       },
-
     ],
   },
   {
