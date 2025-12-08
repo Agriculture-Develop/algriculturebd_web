@@ -11,7 +11,7 @@ export const createLineChart = (
     legend: comLegend(),
     grid: comGrid(),
     xAxis: comXAxis(xData),
-    yAxis: comYAxis('', 20),
+    yAxis: comYAxis('（元/公斤）', 20),
     series: [
       {
         type: 'line',
