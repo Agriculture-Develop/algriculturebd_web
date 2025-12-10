@@ -1,16 +1,10 @@
 <script setup lang="ts">
-import type { TabsPaneContext } from 'element-plus'
-import { useRequest } from 'alova/client'
 import { ElImage } from 'element-plus'
 import { computed, onMounted, ref, watch, watchEffect } from 'vue'
 import { RouterLink } from 'vue-router'
 // import bannerImg2 from '@/static/img/bannerImg/banner_new.webp'
 import bannerImg3 from '@/static/img/bannerImg/banana.jpg'
-import bannerImg2 from '@/static/img/bannerImg/boluo2.jpg'
-import bannerImg1 from '@/static/img/bannerImg/boluo.jpg'
-import bannerImg4 from '@/static/img/bannerImg/lingmeng.jpg'
 import { newsImg } from '@/utils/imges'
-import { formatTime } from '@/utils/time'
 
 interface Inews {
   id?: number
@@ -67,7 +61,7 @@ const paginatedNews = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value
   const end = start + pageSize.value
   // window.scrollTo({ top: 450, behavior: 'smooth' })
-  return groupedNews.value.map((group) => ({
+  return groupedNews.value.map(group => ({
     type: group.type,
     items: group.items.slice(start, end),
   }))
@@ -87,7 +81,7 @@ const groupedNews = computed(() => {
   }))
 })
 const paginatedNewsWithData = computed(() => {
-  return paginatedNews.value.filter((group) => group.items.length > 0)
+  return paginatedNews.value.filter(group => group.items.length > 0)
 })
 watchEffect(() => {
   console.log(paginatedNews.value, 'paginatedNews')
@@ -95,7 +89,7 @@ watchEffect(() => {
   console.log(groupedNews.value, 'groupedNews')
 })
 const currentTabLength = computed(() => {
-  const tab = groupedNews.value.find((type) => type.type === activeName.value)
+  const tab = groupedNews.value.find(type => type.type === activeName.value)
   return tab ? tab.items.length : 0
 })
 </script>
@@ -153,7 +147,7 @@ const currentTabLength = computed(() => {
               <div v-for="item in tab.items" :key="item.id" class="news-card h277px">
                 <div>
                   <RouterLink :to="`/main/news/${item.id}`">
-                    <img :src="newsImg(item.cover_url)" alt="新闻图片" class="news-image" />
+                    <img :src="newsImg(item.cover_url)" alt="新闻图片" class="news-image">
                     <div class="news-content">
                       <h3 class="news-title">
                         {{ item.title }}
@@ -185,7 +179,9 @@ const currentTabLength = computed(() => {
 
       <!-- 价格行情 -->
       <section class="price-trend">
-        <div class="section-title">农产品价格行情</div>
+        <div class="section-title">
+          农产品价格行情
+        </div>
 
         <table class="price-table">
           <thead>
@@ -202,35 +198,45 @@ const currentTabLength = computed(() => {
               <td>菠菜</td>
               <td>1.6</td>
               <td>茂名</td>
-              <td class="trend-up">↑4.11%</td>
+              <td class="trend-up">
+                ↑4.11%
+              </td>
               <td>📈</td>
             </tr>
             <tr>
               <td>胡萝卜</td>
               <td>1.6</td>
               <td>茂名</td>
-              <td class="trend-up">↑3.11%</td>
+              <td class="trend-up">
+                ↑3.11%
+              </td>
               <td>📈</td>
             </tr>
             <tr>
               <td>白菜</td>
               <td>1.2</td>
               <td>茂名</td>
-              <td class="trend-down">↓2.45%</td>
+              <td class="trend-down">
+                ↓2.45%
+              </td>
               <td>📉</td>
             </tr>
             <tr>
               <td>土豆</td>
               <td>2.1</td>
               <td>茂名</td>
-              <td class="trend-up">↑1.78%</td>
+              <td class="trend-up">
+                ↑1.78%
+              </td>
               <td>📈</td>
             </tr>
           </tbody>
         </table>
 
         <div class="view-more">
-          <RouterLink to="/main/news" class="btn btn-outline"> 查看更多 </RouterLink>
+          <RouterLink to="/main/news" class="btn btn-outline">
+            查看更多
+          </RouterLink>
         </div>
       </section>
     </main>

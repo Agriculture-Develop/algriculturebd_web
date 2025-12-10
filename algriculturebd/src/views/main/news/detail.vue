@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { ElMessage } from 'element-plus'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import img from '@/static/img/bannerImg/lingmeng.jpg'
 import { newsImg } from '@/utils/imges'
 import { formatTime } from '@/utils/time'
 
@@ -39,10 +37,10 @@ const getNews = async (id: string) => {
   <div class="p-6 news-detail-container max-w-4xl mx-auto">
     <!-- 文章头部 -->
     <div class="mb-8 article-header">
-      <h1 class="text-3xl font-bold mb-4 text-center">
+      <h1 class="font-bold text-center text-3xl mb-4">
         {{ news?.title }}
       </h1>
-      <div class="flex items-center gap-4 text-gray-500 text-sm">
+      <div class="flex items-center text-gray-500 gap-4 text-sm">
         <span>{{ news?.source }}</span>
         <span>{{ formatTime(news?.created_at) }}</span>
         <!-- 标签 -->

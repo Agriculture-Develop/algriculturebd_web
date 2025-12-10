@@ -2,7 +2,6 @@
 import { ElMessage } from 'element-plus'
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import img from '@/static/img/bannerImg/banner_new.webp'
 import { newsImg } from '@/utils/imges'
 import { formatTime } from '@/utils/time'
 
@@ -97,13 +96,13 @@ const handleDetialClick = (params: string) => {
 </script>
 
 <template>
-  <div class="news-container p-6">
+  <div class="p-6 news-container">
     <h1 class="font-bold text-center mb-8 text-3xl">
       茂名农产品新闻
     </h1>
 
     <!-- 搜索和筛选区域 -->
-    <div class="flex search-filter mb-6 flex-col md:flex-row gap-4">
+    <div class="flex gap-4 search-filter mb-6 flex-col md:flex-row">
       <el-input
         v-model.lazy="searchKeyword"
         placeholder="搜索新闻..."
@@ -138,7 +137,7 @@ const handleDetialClick = (params: string) => {
 
         v-for="news in paginatedNews"
         :key="news.id"
-        class="bg-white p-6 news-item rounded-lg shadow-md"
+        class="bg-white p-6 rounded-lg news-item shadow-md"
         @click="handleDetialClick(String(news.id)) "
       >
         <div class="flex flex-col md:flex-row gap-6">
@@ -146,7 +145,7 @@ const handleDetialClick = (params: string) => {
             <img
               :src="newsImg(news.cover_url)"
               :alt="news.title"
-              class="w-full rounded-lg h-48 object-cover"
+              class="w-full rounded-lg object-cover h-48"
             >
           </div>
           <div class="news-content flex-1">

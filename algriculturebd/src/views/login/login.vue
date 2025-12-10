@@ -28,7 +28,7 @@ const toogleBtn = () => {
 </script>
 
 <template>
-  <div v-if="login" class="min-h-screen flex items-center justify-center bg-gray-50">
+  <div v-if="login" class="flex min-h-screen items-center justify-center bg-gray-50">
     <div class="w-[450px] bg-white rounded-2xl shadow-lg p-8">
       <!-- 标题 -->
       <div class="text-center mb-8">

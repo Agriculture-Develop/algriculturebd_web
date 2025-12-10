@@ -1,18 +1,15 @@
 <script setup lang="ts">
-import { computed, ref, useTemplateRef } from 'vue'
+import { ref, useTemplateRef } from 'vue'
+import { alovaInstance } from '@/api'
 import { useEcharts } from '@/hooks/useEcharts'
-import { createLineChart } from '@/views/charts/lineChart'
 import { createBarChart } from '@/views/charts/barChar'
 
-import { alovaInstance } from '@/api'
+import { createLineChart } from '@/views/charts/lineChart'
 
 const lineChart = useTemplateRef('lineChart')
 const barChart = useTemplateRef('barChart')
 
-const data = {
-  xData: ['2025-03-05', '2025-03-06', '2025-03-07', '2025-03-08'],
-  sellCount: [3.8, 4.3, 4.2, 3.6],
-}
+
 const date = ref([])
 const averagePrice = ref([])
 const minimumPrice = ref([])
@@ -39,9 +36,12 @@ interface Rfood {
   productName: string
   provenanceName: string
 }
+interface ApiResponse {
+  rows: Rfood[]
+}
 const foodList = ref<Array<Rfood>>()
 async function getApi(params: Ifood) {
-  const response = await alovaInstance.Get<Array<Rfood>>(
+  const response = await alovaInstance.Get<ApiResponse>(
     'https://www.jnmarket.net/api/dailypricelist',
     { params },
   )
@@ -58,7 +58,7 @@ const handleSearch = async () => {
   console.log(data)
 
   foodList.value = data.rows
-    .map((item) => ({
+    .map(item => ({
       averagePrice: item.averagePrice,
       topPrice: item.topPrice,
       minimumPrice: item.minimumPrice,
@@ -74,7 +74,7 @@ const handleSearch = async () => {
       //    - 如果用户未输入产品名称（为空或空格），则不过滤
       //    - 如果用户输入了产品名称，则完全匹配（trim() 处理前后空格）
       let pro
-      let productNameInput = form.value.name.trim()
+      const productNameInput = form.value.name.trim()
       pro = productNameInput
       const isProductNameValid = productNameInput
         ? item.productName === productNameInput // 完全相等用 === 更高效
@@ -121,12 +121,18 @@ const handleSearch = async () => {
       </el-form-item>
       <el-form-item>
         <el-radio-group v-model="radio">
-          <el-radio :value="1" size="large" border>蔬菜</el-radio>
-          <el-radio :value="2" size="large" border>水果</el-radio>
+          <el-radio :value="1" size="large" border>
+            蔬菜
+          </el-radio>
+          <el-radio :value="2" size="large" border>
+            水果
+          </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleSearch">搜索</el-button>
+        <el-button @click="handleSearch">
+          搜索
+        </el-button>
       </el-form-item>
     </el-form>
   </div>

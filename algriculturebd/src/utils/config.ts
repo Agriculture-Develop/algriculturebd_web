@@ -8,7 +8,8 @@ let BASE_URL = ''
 if (import.meta.env.PROD) {
   // 生产环境
   BASE_URL = 'http://47.115.160.54:38080'
-} else {
+}
+else {
   // 开发环境
   BASE_URL = 'http://47.121.189.38:28080/api/v1'
 }

@@ -2,7 +2,7 @@ import type { ECOption } from '#/echarts'
 import { comGrid, comLegend, comToolTip, comXAxis, comYAxis } from '@/utils/echarts-config'
 
 export const createBarChart = (
-  props: { xData: any; y1: any; y2: any; y3: any } = { xData: [], y1: [], y2: [], y3: [] },
+  props: { xData: any, y1: any, y2: any, y3: any } = { xData: [], y1: [], y2: [], y3: [] },
 ) => {
   const { xData, y1, y2, y3 } = props
   const options: ECOption = {

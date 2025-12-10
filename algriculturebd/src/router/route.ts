@@ -45,11 +45,7 @@ export const routes: RouteRecordRaw[] = [
             name: 'PlantingArea',
             component: () => import('@/views/main/algriculture/PlantingArea.vue'),
           },
-          {
-            path: 'yieldPredict',
-            name: 'YieldPredict',
-            component: () => import('@/views/main/algriculture/YieldPrediction.vue'),
-          },
+
         ],
       },
     ],
